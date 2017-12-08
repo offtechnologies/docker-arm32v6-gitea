@@ -1,0 +1,24 @@
+sudo: required
+addons:
+  apt:
+    packages:
+      - docker-ce
+services:
+- docker
+language: bash
+script:
+# prepare qemu
+- docker run --rm --privileged multiarch/qemu-user-static:register --reset
+# build image
+- docker build -t offtechnologies/docker-arm32v6-gitea .
+# test image
+#- docker run offtechnologies/docker-arm32v6-gitea uname -a
+# push image
+- >
+  if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+    TAG=$(grep "ARG GITEA_VERSION" Dockerfile | awk -F "=" 'NF>1{print $NF}')
+    docker tag offtechnologies/docker-arm32v6-gitea offtechnologies/docker-arm32v6-gitea:$TAG
+    docker push offtechnologies/docker-arm32v6-gitea:$TAG
+    docker push offtechnologies/docker-arm32v6-gitea
+  fi
