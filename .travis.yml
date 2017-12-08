@@ -1,8 +1,3 @@
-sudo: required
-addons:
-  apt:
-    packages:
-      - docker-ce
 services:
 - docker
 language: bash
@@ -12,7 +7,7 @@ script:
 # build image
 - docker build -t offtechnologies/docker-arm32v6-gitea .
 # test image
-#- docker run offtechnologies/docker-arm32v6-gitea uname -a
+# - docker run offtechnologies/docker-arm32v6-gitea uname -a
 # push image
 - >
   if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
